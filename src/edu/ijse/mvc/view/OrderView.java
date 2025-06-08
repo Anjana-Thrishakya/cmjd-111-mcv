@@ -6,10 +6,14 @@ package edu.ijse.mvc.view;
 
 import edu.ijse.mvc.controller.CustomerController;
 import edu.ijse.mvc.controller.ItemController;
+import edu.ijse.mvc.controller.OrderController;
 import edu.ijse.mvc.dto.CustomerDto;
 import edu.ijse.mvc.dto.ItemDto;
 import edu.ijse.mvc.dto.OrderDetailDto;
+import edu.ijse.mvc.dto.OrderDto;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,7 +25,7 @@ public class OrderView extends javax.swing.JFrame {
     
     private CustomerController customerController = new CustomerController();
     private ItemController itemController = new ItemController();
-
+    private OrderController orderController = new OrderController();
     private ArrayList<OrderDetailDto> orderDetailDtos = new ArrayList<>();
     /**
      * Creates new form OrderVIew
@@ -134,6 +138,11 @@ public class OrderView extends javax.swing.JFrame {
 
         btnPlaceOrder.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnPlaceOrder.setText("Place Order");
+        btnPlaceOrder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPlaceOrderActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -232,6 +241,10 @@ public class OrderView extends javax.swing.JFrame {
         addToCart();
     }//GEN-LAST:event_btnAddActionPerformed
 
+    private void btnPlaceOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlaceOrderActionPerformed
+        placeOrder();
+    }//GEN-LAST:event_btnPlaceOrderActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -306,5 +319,22 @@ public class OrderView extends javax.swing.JFrame {
         Object[] rowData = {orderDetailDto.getItemCode(), orderDetailDto.getQty(), orderDetailDto.getDiscount()};
         DefaultTableModel dtm = (DefaultTableModel) tblCart.getModel();
         dtm.addRow(rowData);
+    }
+
+    private void placeOrder() {
+        OrderDto orderDto = new OrderDto();
+        orderDto.setCustId(txtCustId.getText());
+        orderDto.setOrderId(txtOrderId.getText());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = sdf.format(new Date());
+        orderDto.setDate(dateString);
+        
+        try {
+            String resp = orderController.placeOrder(orderDto, orderDetailDtos);
+            JOptionPane.showMessageDialog(this, resp);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+                
     }
 }
