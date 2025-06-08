@@ -4,17 +4,31 @@
  */
 package edu.ijse.mvc.view;
 
+import edu.ijse.mvc.controller.CustomerController;
+import edu.ijse.mvc.controller.ItemController;
+import edu.ijse.mvc.dto.CustomerDto;
+import edu.ijse.mvc.dto.ItemDto;
+import edu.ijse.mvc.dto.OrderDetailDto;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Anjana
  */
 public class OrderView extends javax.swing.JFrame {
+    
+    private CustomerController customerController = new CustomerController();
+    private ItemController itemController = new ItemController();
 
+    private ArrayList<OrderDetailDto> orderDetailDtos = new ArrayList<>();
     /**
      * Creates new form OrderVIew
      */
     public OrderView() {
         initComponents();
+        initTable();
     }
 
     /**
@@ -43,7 +57,7 @@ public class OrderView extends javax.swing.JFrame {
         txtDiscount = new javax.swing.JTextField();
         btnAdd = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblCart = new javax.swing.JTable();
         btnPlaceOrder = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -64,6 +78,11 @@ public class OrderView extends javax.swing.JFrame {
 
         btnCustSerach.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnCustSerach.setText("Search");
+        btnCustSerach.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCustSerachActionPerformed(evt);
+            }
+        });
 
         lblCustData.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -74,6 +93,11 @@ public class OrderView extends javax.swing.JFrame {
 
         btnSearchItem.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnSearchItem.setText("Search");
+        btnSearchItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchItemActionPerformed(evt);
+            }
+        });
 
         lblItemData.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -89,8 +113,13 @@ public class OrderView extends javax.swing.JFrame {
 
         btnAdd.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnAdd.setText("Add To Cart");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblCart.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -101,7 +130,7 @@ public class OrderView extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblCart);
 
         btnPlaceOrder.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnPlaceOrder.setText("Place Order");
@@ -191,41 +220,22 @@ public class OrderView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnCustSerachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustSerachActionPerformed
+        searchCustomer();
+    }//GEN-LAST:event_btnCustSerachActionPerformed
+
+    private void btnSearchItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchItemActionPerformed
+        searchItem();
+    }//GEN-LAST:event_btnSearchItemActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        addToCart();
+    }//GEN-LAST:event_btnAddActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(OrderView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(OrderView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(OrderView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(OrderView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new OrderView().setVisible(true);
-            }
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
@@ -233,7 +243,6 @@ public class OrderView extends javax.swing.JFrame {
     private javax.swing.JButton btnPlaceOrder;
     private javax.swing.JButton btnSearchItem;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblCustData;
     private javax.swing.JLabel lblCustId;
     private javax.swing.JLabel lblDiscount;
@@ -242,10 +251,60 @@ public class OrderView extends javax.swing.JFrame {
     private javax.swing.JLabel lblItemData;
     private javax.swing.JLabel lblOrderId;
     private javax.swing.JLabel lblQty;
+    private javax.swing.JTable tblCart;
     private javax.swing.JTextField txtCustId;
     private javax.swing.JTextField txtDiscount;
     private javax.swing.JTextField txtItem;
     private javax.swing.JTextField txtOrderId;
     private javax.swing.JTextField txtQty;
     // End of variables declaration//GEN-END:variables
+
+    private void searchCustomer() {
+        try {
+            CustomerDto custDto = customerController.getCustomer(txtCustId.getText());
+            if(custDto != null){
+                lblCustData.setText(custDto.getTitle() + " " + custDto.getName());
+            } else {
+                lblCustData.setText("Customer Not Found");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+
+    private void searchItem() {
+        try {
+            ItemDto itemDto = itemController.searchItem(txtItem.getText());
+            if(itemDto != null){
+                lblItemData.setText(itemDto.getId() + " | " + itemDto.getDesc() + " | " + itemDto.getPack() + " | " + itemDto.getQoh() + " | " + itemDto.getUnitPrice());
+            } else {
+                lblItemData.setText("Item Not Found");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+
+    private void initTable() {
+        String[] columns = {"Item Code", "Qty", "Discount"};
+        DefaultTableModel dtm = new DefaultTableModel(columns,0){
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        tblCart.setModel(dtm);
+    }
+
+    private void addToCart() {
+        OrderDetailDto orderDetailDto = new OrderDetailDto();
+        orderDetailDto.setDiscount(Integer.parseInt(txtDiscount.getText()));
+        orderDetailDto.setQty(Integer.parseInt(txtQty.getText()));
+        orderDetailDto.setItemCode(txtItem.getText());
+        
+        orderDetailDtos.add(orderDetailDto);
+        
+        Object[] rowData = {orderDetailDto.getItemCode(), orderDetailDto.getQty(), orderDetailDto.getDiscount()};
+        DefaultTableModel dtm = (DefaultTableModel) tblCart.getModel();
+        dtm.addRow(rowData);
+    }
 }
